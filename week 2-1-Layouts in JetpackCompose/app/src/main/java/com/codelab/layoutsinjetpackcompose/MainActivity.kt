@@ -282,8 +282,13 @@ fun LayoutsInJetpackCompose() {
 
 @Composable
 fun BodyContent(modifier: Modifier = Modifier) {
-    Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
-        StaggeredGrid(modifier = modifier, rows = 5) {
+    Row(modifier = Modifier
+        .background(color = Color.LightGray)
+        .padding(16.dp)
+        .size(200.dp)
+        .horizontalScroll(rememberScrollState())
+    ) {
+        StaggeredGrid(modifier = modifier) {
             for (topic in topics) {
                 Chip(modifier = Modifier.padding(8.dp), text = topic)
             }
