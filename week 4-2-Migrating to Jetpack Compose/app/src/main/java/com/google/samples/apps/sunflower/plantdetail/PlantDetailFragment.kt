@@ -21,6 +21,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ShareCompat
 import androidx.core.widget.NestedScrollView
@@ -29,6 +40,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.composethemeadapter.MdcTheme
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.samples.apps.sunflower.R
@@ -52,7 +64,7 @@ class PlantDetailFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         val binding = DataBindingUtil.inflate<FragmentPlantDetailBinding>(
             inflater, R.layout.fragment_plant_detail, container, false
         ).apply {
@@ -65,6 +77,18 @@ class PlantDetailFragment : Fragment() {
                         plantDetailViewModel.addPlantToGarden()
                         Snackbar.make(root, R.string.added_plant_to_garden, Snackbar.LENGTH_LONG)
                             .show()
+                    }
+                }
+            }
+
+            composeView.apply {
+                // View의 LifecycleOwner가 파괴될 때 컴포지션을 폐기 한다.
+                setViewCompositionStrategy(
+                    ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
+                )
+                setContent {
+                    MdcTheme {
+                        PlantDetailDescription(plantDetailViewModel)
                     }
                 }
             }
@@ -144,5 +168,25 @@ class PlantDetailFragment : Fragment() {
 
     interface Callback {
         fun add(plant: Plant?)
+    }
+}
+
+@Composable
+fun PlantName(name: String) {
+    Text(
+        text = name,
+        style = MaterialTheme.typography.h5,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = dimensionResource(R.dimen.margin_small))
+            .wrapContentWidth(Alignment.CenterHorizontally)
+    )
+}
+
+@Preview
+@Composable
+private fun PlantNamePreview() {
+    MaterialTheme {
+        PlantName("Apple")
     }
 }
